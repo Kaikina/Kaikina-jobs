@@ -1,5 +1,6 @@
 package com.tgirou.skilled.events;
 
+import com.tgirou.skilled.data.SkillProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
@@ -16,7 +17,14 @@ public class MinerEvent {
         System.out.println("BLOCK " + block.getRegistryName() + " destroyed.");
         didGetEXP = true;
         if (didGetEXP) {
-            System.out.println("1 XP added to " + player.getName().getContents());
+            player.getCapability(SkillProvider.SKILL).ifPresent(skill -> {
+                skill.addExp(1);
+            });
+
+            player.getCapability(SkillProvider.SKILL).ifPresent(skill -> {
+                System.out.println("Skill " + skill.getName() + " has " + skill.getExp() + " exp.");
+            });
+
         }
     }
 }

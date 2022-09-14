@@ -2,6 +2,7 @@ package com.tgirou.skilled;
 
 import com.mojang.logging.LogUtils;
 import com.tgirou.skilled.client.KeyInputHandler;
+import com.tgirou.skilled.data.SkillEvents;
 import com.tgirou.skilled.events.MinerEvent;
 import com.tgirou.skilled.networking.Messages;
 import com.tgirou.skilled.client.KeyBindings;
@@ -44,8 +45,12 @@ public class SkilledMod
     private void setup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             forgeEventBus.addListener(KeyInputHandler::onKeyInput);
+            forgeEventBus.addGenericListener(Entity.class, SkillEvents::onAttachCapabilitiesPlayer);
+            forgeEventBus.addListener(SkillEvents::onPlayerCloned);
+            forgeEventBus.addListener(SkillEvents::onRegisterCapabilities);
             KeyBindings.init();
             Messages.register();
         });
+
     }
 }

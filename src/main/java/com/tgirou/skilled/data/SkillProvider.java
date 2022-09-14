@@ -1,6 +1,6 @@
 package com.tgirou.skilled.data;
 
-import com.tgirou.skilled.skills.Skill;
+import com.tgirou.skilled.skills.SkillManager;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
@@ -15,15 +15,15 @@ import javax.annotation.Nullable;
 
 public class SkillProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
 
-    public static Capability<Skill> SKILL = CapabilityManager.get(new CapabilityToken<>(){});
+    public static Capability<SkillManager> SKILL_MANAGER = CapabilityManager.get(new CapabilityToken<>(){});
 
-    private Skill skill = null;
-    private final LazyOptional<Skill> opt = LazyOptional.of(this::createSkill);
+    private SkillManager skill = null;
+    private final LazyOptional<SkillManager> opt = LazyOptional.of(this::createSkill);
 
     @Nonnull
-    private Skill createSkill() {
+    private SkillManager createSkill() {
         if (skill == null) {
-            skill = new Skill("test", 0, 0);
+            skill = new SkillManager();
         }
         return skill;
     }
@@ -31,7 +31,7 @@ public class SkillProvider implements ICapabilityProvider, INBTSerializable<Comp
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
-        if (cap == SKILL) {
+        if (cap == SKILL_MANAGER) {
             return opt.cast();
         }
         return LazyOptional.empty();

@@ -1,9 +1,11 @@
-package com.tgirou.jobs;
+package com.tgirou.skilled;
 
 import com.mojang.logging.LogUtils;
-import com.tgirou.jobs.events.ForgeBreakEvent;
+import com.tgirou.skilled.client.KeyInputHandler;
+import com.tgirou.skilled.events.MinerEvent;
+import com.tgirou.skilled.networking.Messages;
+import com.tgirou.skilled.client.KeyBindings;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -13,25 +15,25 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(JobsMod.MOD_ID)
-public class JobsMod
+@Mod(SkilledMod.MOD_ID)
+public class SkilledMod
 {
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final String MOD_ID = "jobs";
+    public static final String MOD_ID = "skilled";
 
     private static final IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
 
-    public JobsMod()
+    public SkilledMod()
     {
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 
         // Register ourselves for server and other game events we are interested in
         forgeEventBus.register(this);
-        forgeEventBus.register(new ForgeBreakEvent());
-        forgeEventBus.addGenericListener(Entity.class, JobsMod::forgeEventHandler);
+        forgeEventBus.register(new MinerEvent());
+        forgeEventBus.addGenericListener(Entity.class, SkilledMod::forgeEventHandler);
     }
 
     // This event is on the forge bus
@@ -40,8 +42,10 @@ public class JobsMod
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-        // some preinit code
-        LOGGER.info("HELLO FROM PREINIT");
-        LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+        event.enqueueWork(() -> {
+            forgeEventBus.addListener(KeyInputHandler::onKeyInput);
+            KeyBindings.init();
+            Messages.register();
+        });
     }
 }

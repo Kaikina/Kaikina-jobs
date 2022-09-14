@@ -1,4 +1,4 @@
-package com.tgirou.jobs.events;
+package com.tgirou.skilled.events;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class ForgeBreakEvent {
+public class MinerEvent {
     @SubscribeEvent
     public void registerBreakEvent(BlockEvent.BreakEvent event) {
         Player player = event.getPlayer();

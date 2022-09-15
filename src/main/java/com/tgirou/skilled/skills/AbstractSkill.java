@@ -8,6 +8,7 @@ import static java.util.Map.entry;
 
 public class AbstractSkill {
     protected String name;
+    protected Random random = new Random();
     protected HashMap<String, int[]> blocksTable = new HashMap<>();
     protected int[] expTable = new int[]{
             0,
@@ -135,19 +136,19 @@ public class AbstractSkill {
      */
     public float getMultiplier(int level) {
         if (level >= 80) {
-            return 5f + new Random().nextFloat() * (50f - 5f);
+            return 5f + random.nextFloat() * (50f - 5f);
         } else if (level >= 70) {
-            return 4.5f + new Random().nextFloat() * (25f - 4.5f);
+            return 4.5f + random.nextFloat() * (25f - 4.5f);
         } else if (level >= 60) {
-            return 4f + new Random().nextFloat() * (25f - 4f);
+            return 4f + random.nextFloat() * (25f - 4f);
         } else if (level >= 50) {
-            return 3.5f + new Random().nextFloat() * (5f - 3.5f);
+            return 3.5f + random.nextFloat() * (5f - 3.5f);
         } else if (level >= 40) {
-            return 3f + new Random().nextFloat() * (5f - 3f);
+            return 3f + random.nextFloat() * (5f - 3f);
         } else if (level >= 30) {
-            return 2.5f + new Random().nextFloat() * (5f - 2.5f);
+            return 2.5f + random.nextFloat() * (5f - 2.5f);
         } else if (level >= 20) {
-            return 2f + new Random().nextFloat() * (2.5f - 2f);
+            return 2f + random.nextFloat() * (2.5f - 2f);
         } else if (level >= 10) {
             return 1.5f;
         } else {
@@ -173,4 +174,8 @@ public class AbstractSkill {
         System.out.println(blockName);
         return this.blocksTable.get(blockName);
     }
+
+//    public levelUp() {
+//
+//    }
 }

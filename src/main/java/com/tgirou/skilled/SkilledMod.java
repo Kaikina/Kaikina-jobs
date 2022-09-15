@@ -3,8 +3,8 @@ package com.tgirou.skilled;
 import com.mojang.logging.LogUtils;
 import com.tgirou.skilled.api.util.Constants;
 import com.tgirou.skilled.client.KeyInputHandler;
-import com.tgirou.skilled.data.SkillEvents;
-import com.tgirou.skilled.events.MinerEvent;
+import com.tgirou.skilled.events.progression.ProgressionEvents;
+import com.tgirou.skilled.events.skills.MinerEvent;
 import com.tgirou.skilled.networking.Messages;
 import com.tgirou.skilled.client.KeyBindings;
 import net.minecraft.world.entity.Entity;
@@ -46,9 +46,9 @@ public class SkilledMod
     private void setup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             forgeEventBus.addListener(KeyInputHandler::onKeyInput);
-            forgeEventBus.addGenericListener(Entity.class, SkillEvents::onAttachCapabilitiesPlayer);
-            forgeEventBus.addListener(SkillEvents::onPlayerCloned);
-            forgeEventBus.addListener(SkillEvents::onRegisterCapabilities);
+            forgeEventBus.addGenericListener(Entity.class, ProgressionEvents::onAttachCapabilitiesPlayer);
+            forgeEventBus.addListener(ProgressionEvents::onPlayerCloned);
+            forgeEventBus.addListener(ProgressionEvents::onRegisterCapabilities);
             KeyBindings.init();
             Messages.register();
         });

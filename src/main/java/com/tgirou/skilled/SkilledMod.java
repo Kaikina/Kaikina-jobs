@@ -1,6 +1,7 @@
 package com.tgirou.skilled;
 
 import com.mojang.logging.LogUtils;
+import com.tgirou.skilled.api.util.Constants;
 import com.tgirou.skilled.client.KeyInputHandler;
 import com.tgirou.skilled.data.SkillEvents;
 import com.tgirou.skilled.events.MinerEvent;
@@ -22,7 +23,7 @@ public class SkilledMod
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final String MOD_ID = "skilled";
+    public static final String MOD_ID = Constants.MOD_ID;
 
     private static final IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
 

@@ -1,7 +1,7 @@
 package com.tgirou.skilled.data;
 
 import com.tgirou.skilled.SkilledMod;
-import com.tgirou.skilled.skills.SkillManager;
+import com.tgirou.skilled.skills.ProgressionManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -29,7 +29,7 @@ public class SkillEvents {
     }
 
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
-        event.register(SkillManager.class);
+        event.register(ProgressionManager.class);
     }
 
 }

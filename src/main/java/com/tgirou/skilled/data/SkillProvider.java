@@ -1,6 +1,6 @@
 package com.tgirou.skilled.data;
 
-import com.tgirou.skilled.skills.SkillManager;
+import com.tgirou.skilled.skills.ProgressionManager;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
@@ -15,15 +15,15 @@ import javax.annotation.Nullable;
 
 public class SkillProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
 
-    public static Capability<SkillManager> SKILL_MANAGER = CapabilityManager.get(new CapabilityToken<>(){});
+    public static Capability<ProgressionManager> SKILL_MANAGER = CapabilityManager.get(new CapabilityToken<>(){});
 
-    private SkillManager skill = null;
-    private final LazyOptional<SkillManager> opt = LazyOptional.of(this::createSkill);
+    private ProgressionManager skill = null;
+    private final LazyOptional<ProgressionManager> opt = LazyOptional.of(this::createSkill);
 
     @Nonnull
-    private SkillManager createSkill() {
+    private ProgressionManager createSkill() {
         if (skill == null) {
-            skill = new SkillManager();
+            skill = new ProgressionManager();
         }
         return skill;
     }

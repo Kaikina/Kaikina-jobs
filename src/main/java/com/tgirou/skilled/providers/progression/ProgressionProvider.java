@@ -3,12 +3,10 @@ package com.tgirou.skilled.providers.progression;
 import com.tgirou.skilled.progression.ProgressionManager;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,6 +25,7 @@ public class ProgressionProvider implements ICapabilityProvider, INBTSerializabl
         }
         return skill;
     }
+
 
     @Nonnull
     @Override
@@ -54,4 +53,5 @@ public class ProgressionProvider implements ICapabilityProvider, INBTSerializabl
     public void deserializeNBT(CompoundTag nbt) {
         createProgression().loadNBT(nbt);
     }
+
 }

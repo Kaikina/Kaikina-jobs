@@ -6,9 +6,14 @@ import com.tgirou.skilled.progression.ProgressionManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import org.lwjgl.system.CallbackI;
+
 
 public class ProgressionEvents {
     ProgressionEvents() {
@@ -22,11 +27,19 @@ public class ProgressionEvents {
         }
     }
 
+
     public static void onPlayerCloned(PlayerEvent.Clone event) {
         if (event.isWasDeath()) {
-            event.getOriginal().getCapability(ProgressionProvider.PROGRESSION_MANAGER).ifPresent(oldSkillManager ->
-                    event.getPlayer().getCapability(ProgressionProvider.PROGRESSION_MANAGER).ifPresent(newSkillManager ->
-                            newSkillManager.copyFrom(oldSkillManager)));
+
+            event.getOriginal().reviveCaps();
+
+            event.getOriginal().getCapability(ProgressionProvider.PROGRESSION_MANAGER).ifPresent(oldProgression -> {
+                event.getPlayer().getCapability(ProgressionProvider.PROGRESSION_MANAGER).ifPresent(newProgression -> {
+                    newProgression.copyFrom(oldProgression);
+                });
+            });
+            event.getOriginal().invalidateCaps();
+
         }
     }
 

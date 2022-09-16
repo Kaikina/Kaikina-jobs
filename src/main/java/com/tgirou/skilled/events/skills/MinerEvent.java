@@ -21,8 +21,6 @@ public class MinerEvent {
 
         if (event.getWorld().isClientSide()) return;
 
-//        final BlockPos pos = event.getPos();
-        System.out.println("BLOCK " + block.getRegistryName() + " destroyed.");
         if (minerSkill.hasBlock(Objects.requireNonNull(block.getRegistryName()).toString())) {
             int[] xpRange = minerSkill.getExpRangeForBlock(Objects.requireNonNull(block.getRegistryName()).toString());
             player.getCapability(ProgressionProvider.PROGRESSION_MANAGER).ifPresent(progressionManager -> {
@@ -30,8 +28,6 @@ public class MinerEvent {
                 player.sendMessage(new TextComponent(progressionManager.getProgression().getExpFor("miner").toString() + " xp pour Mineur."), Util.NIL_UUID);
             });
         }
-//
-//        System.out.println("With 0 xp, I'm level " + minerSkill.getLevel(0));
-//        System.out.println("With 45321 xp, I'm level " + minerSkill.getLevel(45321));
+
     }
 }

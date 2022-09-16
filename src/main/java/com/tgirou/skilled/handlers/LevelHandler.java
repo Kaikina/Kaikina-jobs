@@ -8,6 +8,11 @@ import net.minecraft.world.entity.player.Player;
 
 public class LevelHandler {
 
+    /**
+     * Method to call when a player has leveled up. Plays a leveling up sound to the player.
+     * @param player that has leveled up
+     * @param experienceLevel his new level
+     */
     public static void levelUp(Player player, Integer experienceLevel) {
             float f = experienceLevel > 100 ? 1.0F : (float)experienceLevel / 100.0F;
             player.level.playSound(
@@ -21,7 +26,7 @@ public class LevelHandler {
                     1.0F
             );
             player.sendMessage(
-                    new TextComponent("Mineur level up ! Niveau : " + experienceLevel),
+                    new TextComponent("Level up ! Niveau : " + experienceLevel),
                     Util.NIL_UUID
             );
     }

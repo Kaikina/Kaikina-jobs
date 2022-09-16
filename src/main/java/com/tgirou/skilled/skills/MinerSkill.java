@@ -2,10 +2,9 @@ package com.tgirou.skilled.skills;
 
 import com.tgirou.skilled.api.util.LearningType;
 
-import java.util.HashMap;
-
 public class MinerSkill extends AbstractSkill {
     protected LearningType learningType = LearningType.BREAK;
+    public final static String NAME = "miner";
 
     public MinerSkill() {
         this.blocksTable.put("minecraft:netherrack", new int[]{1, 1});

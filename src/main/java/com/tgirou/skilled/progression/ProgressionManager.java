@@ -28,7 +28,7 @@ public class ProgressionManager {
 
     public void loadNBT(CompoundTag compound) {
         Map<String, Integer> localProgression = this.progression.getSkillsProgression();
-        localProgression.forEach((skill, exp) -> this.progression.setExpFor(skill, compound.getInt(skill)));
+        localProgression.forEach((skill, exp) -> this.progression.getSkillsProgression().replace(skill, compound.getInt(skill)));
     }
 
 }

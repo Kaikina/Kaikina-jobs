@@ -24,26 +24,4 @@ public class Progression {
         return this.skillsProgression;
     }
 
-    public void addExpFor(String skillName, Integer exp) {
-        this.setExpFor(skillName, this.getExpFor(skillName) + exp);
-    }
-
-    /**
-     * Returns the experience earned for a skill or null if that skill does not exist.
-     * @param skillName the name of the skill
-     * @return the amount of experience if the skill exist, null if it does not
-     */
-    public Integer getExpFor(String skillName) {
-        return this.skillsProgression.get(skillName);
-    }
-
-    /**
-     * Update the experience earned for a skill.
-     * @param skillName the name of the skill
-     * @param exp the amount for experience
-     * @return the previous value if it has been updated or null if the skill does not exist
-     */
-    public Integer setExpFor(String skillName, Integer exp) {
-        return this.skillsProgression.replace(skillName, exp);
-    }
 }

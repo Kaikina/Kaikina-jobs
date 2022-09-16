@@ -1,16 +1,13 @@
 package com.tgirou.skilled.skills;
 
-import com.google.common.collect.ImmutableMap;
 
 import java.util.*;
 
-import static java.util.Map.entry;
 
 public class AbstractSkill {
-    protected String name;
     protected Random random = new Random();
     protected HashMap<String, int[]> blocksTable = new HashMap<>();
-    protected int[] expTable = new int[]{
+    public static int[] expTable = new int[]{
             0,
             50,
             140,
@@ -113,21 +110,7 @@ public class AbstractSkill {
             581687
     };
 
-    /**
-     * Returns the level achieved for a skill based on the experience earned.
-     * @param exp earned for this skill
-     * @return the level achieved
-     */
-    public Integer getLevel(Integer exp) {
-        int level = 0;
-        while ((level < expTable.length) && (exp > expTable[level])) {
-            ++level;
-        }
-        if (level == 0) {
-            level++;
-        }
-        return level;
-    }
+
 
     /**
      * Returns exp multiplier depending on player level for this skill.
@@ -175,7 +158,4 @@ public class AbstractSkill {
         return this.blocksTable.get(blockName);
     }
 
-//    public levelUp() {
-//
-//    }
 }

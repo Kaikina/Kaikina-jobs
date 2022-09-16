@@ -33,11 +33,9 @@ public class ProgressionEvents {
 
             event.getOriginal().reviveCaps();
 
-            event.getOriginal().getCapability(ProgressionProvider.PROGRESSION_MANAGER).ifPresent(oldProgression -> {
-                event.getPlayer().getCapability(ProgressionProvider.PROGRESSION_MANAGER).ifPresent(newProgression -> {
-                    newProgression.copyFrom(oldProgression);
-                });
-            });
+            event.getOriginal().getCapability(ProgressionProvider.PROGRESSION_MANAGER).ifPresent(oldProgression ->
+                    event.getPlayer().getCapability(ProgressionProvider.PROGRESSION_MANAGER).ifPresent(newProgression ->
+                            newProgression.copyFrom(oldProgression)));
             event.getOriginal().invalidateCaps();
 
         }

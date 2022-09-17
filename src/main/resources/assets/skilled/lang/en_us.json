@@ -1,5 +1,12 @@
 {
   "key.category.skilled": "Skilled",
   "key.skilled.skilled": "Skills window",
-  "com.tgirou.skilled.skill.miner.name": "Miner"
+  "com.tgirou.skilled.skill.miner.name": "Miner",
+  "advancements.first_miner_block_broken.descr": "Mine your first block",
+  "advancements.haste_one.title": "Haste I",
+  "advancements.haste_one.descr": "§9+1.6% of activating\n\n§5When activated:\n§9Haste I (01:00)",
+  "advancements.haste_two.title": "Haste II",
+  "advancements.haste_two.descr": "§93% activating Haste II for 1 min",
+  "advancements.night_vision_one.title": "Night Vision I",
+  "advancements.night_vision_one.descr": "1.6% activating Night Vision for 1 min"
 }

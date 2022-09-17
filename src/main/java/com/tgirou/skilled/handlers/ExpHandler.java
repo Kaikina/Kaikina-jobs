@@ -23,13 +23,15 @@ public class ExpHandler {
     public static void setExpFor(String skillName, Integer exp, Player player) {
         int previousLevel = LevelHandler.getLevel(getExpFor(skillName, player));
 
-        player.getCapability(ProgressionProvider.PROGRESSION_MANAGER).ifPresent((progressionManager) ->
+        player.getCapability(ProgressionProvider.PROGRESSION_MANAGER).ifPresent(progressionManager ->
                 progressionManager.getProgression().getSkillsProgression().replace(skillName, exp));
 
         int experienceLevel = LevelHandler.getLevel(getExpFor(skillName, player));
 
         if (experienceLevel > previousLevel) {
             LevelHandler.levelUp(player, experienceLevel);
+            player.getCapability(ProgressionProvider.PROGRESSION_MANAGER).ifPresent(progressionManager ->
+                    progressionManager.getProgression().getSkillsProgression().replace(skillName, 0));
         }
 
     }
@@ -40,7 +42,7 @@ public class ExpHandler {
      * @return the amount of experience if the skill exist, null if it does not
      */
     public static Integer getExpFor(String skillName, Player player) {
-        return player.getCapability(ProgressionProvider.PROGRESSION_MANAGER).map((progressionManager) ->
+        return player.getCapability(ProgressionProvider.PROGRESSION_MANAGER).map(progressionManager ->
                 progressionManager.getProgression().getSkillsProgression().get(skillName)).orElse(null);
     }
 

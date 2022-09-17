@@ -1,0 +1,23 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:stone_pickaxe"
+    },
+    "title": {
+      "translate": "advancements.night_vision_one.title"
+    },
+    "description": {
+      "translate": "advancements.night_vision_one.descr"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "first_miner_block_broken": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "parent": "skilled:first_miner_block_broken"
+}

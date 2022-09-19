@@ -88,12 +88,10 @@ public class ChoosePathScreen extends AbstractContainerScreen<ChoosePath> {
         assert this.minecraft != null;
         this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
         this.addRenderableWidget(new ImageButton(this.leftPos + 17, this.topPos + 46, 32, 32, 0, 0, 32, BUTTONS, e -> {
-            SkilledMod.PACKET_HANDLER.sendToServer(new ChoosePathButtonMessage(0, x, y, z));
             ChoosePathButtonMessage.handleButtonAction(entity, 0, x, y, z);
             ((ImageButton)e).setPosition(this.leftPos + 17, this.topPos + 46);
         }));
         this.addRenderableWidget(new ImageButton(this.leftPos + 80, this.topPos + 46, 32, 32, 32, 0, 32, BUTTONS, e -> {
-            SkilledMod.PACKET_HANDLER.sendToServer(new ChoosePathButtonMessage(0, x, y, z));
             ChoosePathButtonMessage.handleButtonAction(entity, 1, x, y, z);
             ((ImageButton)e).setPosition(this.leftPos + 80, this.topPos + 46);
         }));

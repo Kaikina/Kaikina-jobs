@@ -47,14 +47,15 @@ public class ChoosePathButtonMessage {
             int x = message.x;
             int y = message.y;
             int z = message.z;
+            assert entity != null;
             handleButtonAction(entity, buttonID, x, y, z);
         });
         context.setPacketHandled(true);
     }
 
     public static void handleButtonAction(Player entity, int buttonID, int x, int y, int z) {
-        Level world = entity.level;
-        HashMap guistate = ChoosePath.guistate;
+//        Level world = entity.level;
+//        HashMap guistate = ChoosePath.guistate;
         if (buttonID == 0) {
             System.out.println("Chose first skill");
         }

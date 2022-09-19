@@ -62,12 +62,25 @@ public class LevelHandler {
      */
     public static Integer getLevel(Integer exp) {
         int level = 0;
-        while ((level < AbstractSkill.expTable.length) && (exp > AbstractSkill.expTable[level])) {
+        while ((level < AbstractSkill.expTable.length) && (exp >= AbstractSkill.expTable[level])) {
             ++level;
         }
         if (level == 0) {
             level++;
         }
         return level;
+    }
+
+    /**
+     * Sets the level of a player for a skill.
+     * @param skillName the skill to set the level for
+     * @param level the level to set
+     * @param player the player to set the skill's level for
+     */
+    public static void setLevelFor(String skillName, Integer level, Player player) {
+        // Set player's new level
+        ExpHandler.setExpFor(skillName, AbstractSkill.expTable[level - 1], player);
+        // Manager leveling triggers
+        ExpHandler.levelingUp(skillName, player, 1);
     }
 }

@@ -3,6 +3,7 @@ package com.tgirou.skilled;
 import com.mojang.logging.LogUtils;
 import com.tgirou.skilled.api.util.Constants;
 import com.tgirou.skilled.client.KeyInputHandler;
+import com.tgirou.skilled.events.commands.RegisterCommandEvents;
 import com.tgirou.skilled.events.progression.ProgressionEvents;
 import com.tgirou.skilled.events.skills.MinerEvent;
 import com.tgirou.skilled.networking.Messages;
@@ -52,6 +53,7 @@ public class SkilledMod
         forgeEventBus.register(this);
         forgeEventBus.register(new MinerEvent());
         forgeEventBus.addGenericListener(Entity.class, SkilledMod::forgeEventHandler);
+        forgeEventBus.register(RegisterCommandEvents.class);
     }
 
     // This event is on the forge bus

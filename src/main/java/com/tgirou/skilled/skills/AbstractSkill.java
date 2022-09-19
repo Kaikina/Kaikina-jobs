@@ -5,7 +5,6 @@ import java.util.*;
 
 
 public class AbstractSkill {
-    protected Random random = new Random();
     protected HashMap<String, int[]> blocksTable = new HashMap<>();
     public static int[] expTable = new int[]{
             0,
@@ -18,7 +17,7 @@ public class AbstractSkill {
             1199,
             1543,
             1911,
-            1543,
+            2330,
             2792,
             3297,
             3840,
@@ -109,35 +108,6 @@ public class AbstractSkill {
             555741,
             581687
     };
-
-
-
-    /**
-     * Returns exp multiplier depending on player level for this skill.
-     * @param level of player for this skill
-     * @return multiplier value
-     */
-    public float getMultiplier(int level) {
-        if (level >= 80) {
-            return 5f + random.nextFloat() * (50f - 5f);
-        } else if (level >= 70) {
-            return 4.5f + random.nextFloat() * (25f - 4.5f);
-        } else if (level >= 60) {
-            return 4f + random.nextFloat() * (25f - 4f);
-        } else if (level >= 50) {
-            return 3.5f + random.nextFloat() * (5f - 3.5f);
-        } else if (level >= 40) {
-            return 3f + random.nextFloat() * (5f - 3f);
-        } else if (level >= 30) {
-            return 2.5f + random.nextFloat() * (5f - 2.5f);
-        } else if (level >= 20) {
-            return 2f + random.nextFloat() * (2.5f - 2f);
-        } else if (level >= 10) {
-            return 1.5f;
-        } else {
-            return 1f;
-        }
-    }
 
     /**
      * Returns true if a skill has a block in its experience table or false if it has not.

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "skilled:block/crystallizer"
+    },
+    "facing=south": {
+      "model": "skilled:block/crystallizer",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "skilled:block/crystallizer",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "skilled:block/crystallizer",
+      "y": 90
+    }
+  }
+}

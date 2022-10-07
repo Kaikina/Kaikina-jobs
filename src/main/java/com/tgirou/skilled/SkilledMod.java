@@ -2,19 +2,28 @@ package com.tgirou.skilled;
 
 import com.mojang.logging.LogUtils;
 import com.tgirou.skilled.api.util.Constants;
+import com.tgirou.skilled.blocks.ModBlocks;
+import com.tgirou.skilled.blocks.entities.ModBlockEntities;
 import com.tgirou.skilled.client.KeyInputHandler;
+import com.tgirou.skilled.client.gui.CrystallizerScreen;
+import com.tgirou.skilled.client.gui.ModMenuTypes;
 import com.tgirou.skilled.events.commands.RegisterCommandEvents;
 import com.tgirou.skilled.events.progression.ProgressionEvents;
 import com.tgirou.skilled.events.skills.MinerEvent;
+import com.tgirou.skilled.items.ModItems;
 import com.tgirou.skilled.networking.Messages;
 import com.tgirou.skilled.client.KeyBindings;
+import com.tgirou.skilled.recipes.ModRecipes;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkEvent;
@@ -46,31 +55,36 @@ public class SkilledMod
 
     public SkilledMod()
     {
-        // Register the setup method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        ModItems.register(modEventBus);
+        ModBlocks.register(modEventBus);
+        ModBlockEntities.register(modEventBus);
+        ModMenuTypes.register(modEventBus);
+        ModRecipes.register(modEventBus);
+
+        forgeEventBus.register(new MinerEvent());
+        forgeEventBus.register(RegisterCommandEvents.class);
+        forgeEventBus.addListener(KeyInputHandler::onKeyInput);
+        forgeEventBus.addGenericListener(Entity.class, ProgressionEvents::onAttachCapabilitiesPlayer);
+        forgeEventBus.addListener(ProgressionEvents::onPlayerCloned);
+        forgeEventBus.addListener(ProgressionEvents::onRegisterCapabilities);
+
+        modEventBus.addListener(this::setup);
+        modEventBus.addListener(this::clientSetup);
 
         // Register ourselves for server and other game events we are interested in
-        forgeEventBus.register(this);
-        forgeEventBus.register(new MinerEvent());
-        forgeEventBus.addGenericListener(Entity.class, SkilledMod::forgeEventHandler);
-        forgeEventBus.register(RegisterCommandEvents.class);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
-    // This event is on the forge bus
-    private static void forgeEventHandler(AttachCapabilitiesEvent<Entity> event) {
-
+    private void clientSetup(final FMLClientSetupEvent event) {
+        MenuScreens.register(ModMenuTypes.CRYSTALLIZER_MENU.get(), CrystallizerScreen::new);
     }
 
     private void setup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            forgeEventBus.addListener(KeyInputHandler::onKeyInput);
-            forgeEventBus.addGenericListener(Entity.class, ProgressionEvents::onAttachCapabilitiesPlayer);
-            forgeEventBus.addListener(ProgressionEvents::onPlayerCloned);
-            forgeEventBus.addListener(ProgressionEvents::onRegisterCapabilities);
             KeyBindings.init();
             Messages.register();
         });
-
     }
 
     public static <T> void addNetworkMessage(Class<T> messageType, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder,

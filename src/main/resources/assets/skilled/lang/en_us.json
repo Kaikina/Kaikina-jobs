@@ -8,5 +8,6 @@
   "advancements.haste_two.title": "Haste II",
   "advancements.haste_two.descr": "§93% activating Haste II for 1 min",
   "advancements.night_vision_one.title": "Night Vision I",
-  "advancements.night_vision_one.descr": "1.6% activating Night Vision for 1 min"
+  "advancements.night_vision_one.descr": "1.6% activating Night Vision for 1 min",
+  "block.skilled.crystallizer": "Crystallizer"
 }

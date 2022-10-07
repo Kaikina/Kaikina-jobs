@@ -1,0 +1,8 @@
+{
+  "type": "skilled:crystallizer",
+  "ingredient": {
+    "item": "minecraft:diamond"
+  },
+  "result": "minecraft:diamond",
+  "crystallizingTime": 400
+}

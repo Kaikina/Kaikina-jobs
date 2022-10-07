@@ -52,8 +52,8 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             return switch (slot) {
-                case 0, 1 -> false;
-                case 2 -> !stack.sameItem(itemStackHandler.getStackInSlot(2)) && canCrystallizeHeldItem(stack);
+                case 1 -> false;
+                case 0, 2 -> !stack.sameItem(itemStackHandler.getStackInSlot(2)) && canCrystallizeHeldItem(stack);
                 default -> super.isItemValid(slot, stack);
             };
         }

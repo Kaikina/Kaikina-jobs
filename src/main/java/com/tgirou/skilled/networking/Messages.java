@@ -1,6 +1,7 @@
 package com.tgirou.skilled.networking;
 
 import com.tgirou.skilled.SkilledMod;
+import com.tgirou.skilled.networking.packet.ItemStackSyncPacket;
 import com.tgirou.skilled.networking.packet.OpenSkilledWindowPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,6 +31,11 @@ public class Messages {
                 .encoder(OpenSkilledWindowPacket::toBytes)
                 .consumer(OpenSkilledWindowPacket::handle)
                 .add();
+        net.messageBuilder(ItemStackSyncPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ItemStackSyncPacket::new)
+                .encoder(ItemStackSyncPacket::toBytes)
+                .consumer(ItemStackSyncPacket::handle)
+                .add();
     }
 
     public static <MSG> void sendToServer(MSG message) {
@@ -38,5 +44,9 @@ public class Messages {
 
     public static <MSG> void sendToPlayer(MSG message, ServerPlayer player) {
         INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
+    }
+
+    public static <MSG> void sendToClients(MSG message) {
+        INSTANCE.send(PacketDistributor.ALL.noArg(), message);
     }
 }

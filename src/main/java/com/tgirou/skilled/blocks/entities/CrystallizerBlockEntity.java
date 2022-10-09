@@ -2,10 +2,11 @@ package com.tgirou.skilled.blocks.entities;
 
 import com.tgirou.skilled.blocks.customs.CrystallizerBlock;
 import com.tgirou.skilled.client.gui.CrystallizerMenu;
+import com.tgirou.skilled.networking.Messages;
+import com.tgirou.skilled.networking.packet.ItemStackSyncPacket;
 import com.tgirou.skilled.recipes.CrystallizerRecipe;
 import net.minecraft.core.*;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.Packet;
@@ -23,7 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -34,8 +34,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
 
 public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider, WorldlyContainer {
     private LazyOptional<IItemHandler> lazyOptionalItemHandler = LazyOptional.empty();
@@ -47,6 +45,10 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
+            assert level != null;
+            if (!level.isClientSide()) {
+                Messages.sendToClients(new ItemStackSyncPacket(this, worldPosition));
+            }
         }
 
         @Override
@@ -60,13 +62,13 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
     };
 
     private final Map<Direction, LazyOptional<WrappedHandler>> directionWrappedHandlerMap =
-            Map.of(Direction.DOWN, LazyOptional.of(() -> new WrappedHandler(itemStackHandler, (i) -> i == 1, (i, s) -> false)),
-                    Direction.NORTH, LazyOptional.of(() -> new WrappedHandler(itemStackHandler, (index) -> index == 0,
-                            (index, stack) -> itemStackHandler.isItemValid(0, stack))),
-                    Direction.SOUTH, LazyOptional.of(() -> new WrappedHandler(itemStackHandler, (i) -> i == 1, (i, s) -> false)),
-                    Direction.EAST, LazyOptional.of(() -> new WrappedHandler(itemStackHandler, (i) -> i == 0,
-                            (index, stack) -> itemStackHandler.isItemValid(0, stack))),
-                    Direction.WEST, LazyOptional.of(() -> new WrappedHandler(itemStackHandler, (index) -> index == 2 || index == 0,
+            Map.of(Direction.DOWN, LazyOptional.of(() -> new WrappedHandler(itemStackHandler, i -> i == 1, (i, s) -> false)),
+                    Direction.NORTH, LazyOptional.of(() -> new WrappedHandler(itemStackHandler, index -> index == 0,
+                            (index, stack) -> itemStackHandler.isItemValid(2, stack))),
+                    Direction.SOUTH, LazyOptional.of(() -> new WrappedHandler(itemStackHandler, i -> i == 1, (i, s) -> false)),
+                    Direction.EAST, LazyOptional.of(() -> new WrappedHandler(itemStackHandler, i -> i == 0,
+                            (index, stack) -> itemStackHandler.isItemValid(2, stack))),
+                    Direction.WEST, LazyOptional.of(() -> new WrappedHandler(itemStackHandler, index -> index == 2 || index == 0,
                             (index, stack) -> itemStackHandler.isItemValid(2, stack) || itemStackHandler.isItemValid(0, stack))));
 
     int crystallizingProgress;
@@ -87,9 +89,10 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
 
             @Override
             public void set(int index, int value) {
-                switch(index) {
-                    case 0 -> CrystallizerBlockEntity.this.crystallizingProgress = value;
-                    case 1 -> CrystallizerBlockEntity.this.crystallizingTotalTime = value;
+                if (index == 0) {
+                    CrystallizerBlockEntity.this.crystallizingProgress = value;
+                } else {
+                    CrystallizerBlockEntity.this.crystallizingTotalTime = value;
                 }
             }
 
@@ -98,6 +101,26 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
                 return 2;
             }
         };
+    }
+
+    public ItemStack getResultStack() {
+        ItemStack stack = new ItemStack(Items.AIR);
+
+        if (!itemStackHandler.getStackInSlot(1).isEmpty()) {
+            stack = itemStackHandler.getStackInSlot(1);
+        }
+
+        return stack;
+    }
+
+    public ItemStack getCrystallizingStack() {
+        ItemStack stack = new ItemStack(Items.AIR);
+
+        if (!itemStackHandler.getStackInSlot(2).isEmpty()) {
+            stack = itemStackHandler.getStackInSlot(2);
+        }
+
+        return stack;
     }
 
     @Override
@@ -109,26 +132,6 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
         return new CrystallizerMenu(id, inventory, this, this.data);
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        super.deserializeNBT(nbt);
-    }
-
-    @Override
-    public CompoundTag serializeNBT() {
-        return super.serializeNBT();
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        super.onDataPacket(net, pkt);
-    }
-
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        super.handleUpdateTag(tag);
     }
 
     @Override
@@ -166,16 +169,6 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
         Containers.dropContents(this.level, this.worldPosition, inventory);
     }
 
-    @Override
-    public AABB getRenderBoundingBox() {
-        return super.getRenderBoundingBox();
-    }
-
-    @Override
-    public void requestModelDataUpdate() {
-        super.requestModelDataUpdate();
-    }
-
     @NotNull
     @Override
     public IModelData getModelData() {
@@ -198,10 +191,10 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
                 }
 
                 return switch (localDir) {
-                    default -> directionWrappedHandlerMap.get(side.getOpposite()).cast();
                     case EAST -> directionWrappedHandlerMap.get(side.getClockWise()).cast();
                     case SOUTH -> directionWrappedHandlerMap.get(side).cast();
                     case WEST -> directionWrappedHandlerMap.get(side.getCounterClockWise()).cast();
+                    default -> directionWrappedHandlerMap.get(side.getOpposite()).cast();
                 };
             }
         }
@@ -236,9 +229,7 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
                 if (entity.crystallizingProgress >= entity.crystallizingTotalTime) {
                     System.out.println("Recipe done. Adding result.");
                     entity.crystallizingProgress = 0;
-                    if (entity.crystallize(recipe, entity.itemStackHandler, i)) {
-//                        entity.setRecipeUsed(recipe);
-                    }
+                    entity.crystallize(recipe, entity.itemStackHandler, i);
                 }
             } else {
                 entity.crystallizingProgress = 0;
@@ -251,17 +242,14 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
         }
     }
 
-    private boolean crystallize(@javax.annotation.Nullable Recipe<?> recipe, ItemStackHandler handler, int maxStack) {
+    private void crystallize(@javax.annotation.Nullable Recipe<?> recipe, ItemStackHandler handler, int maxStack) {
         if (recipe != null && this.canCrystallize(recipe, handler, maxStack)) {
             ItemStack outputStack = handler.getStackInSlot(1);
             if (outputStack.isEmpty()) {
-                handler.setStackInSlot(1, handler.getStackInSlot(2).copy());
+                handler.setStackInSlot(1, new ItemStack(handler.getStackInSlot(2).getItem(), 1));
             } else if (outputStack.is(handler.getStackInSlot(2).getItem())) {
                 outputStack.grow(1);
             }
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -269,9 +257,8 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
         itemStackHandler.setStackInSlot(2, heldItems);
         crystallizingProgress = 0;
         crystallizingTotalTime = getTotalCrystallizingTime(level, itemStackHandler);
-        if (level != null) {
-            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
-        }
+        assert level != null;
+        level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
     }
 
     private static int getTotalCrystallizingTime(Level level, ItemStackHandler itemStackHandler) {
@@ -304,8 +291,6 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
             SimpleContainer inventory = new SimpleContainer(heldItems);
             Recipe<?> recipe = level.getRecipeManager().getRecipeFor(CrystallizerRecipe.Type.INSTANCE, inventory, level).orElse(null);
             if (recipe != null) {
-                ItemStack outputStack = itemStackHandler.getStackInSlot(1);
-                ItemStack inputStack = itemStackHandler.getStackInSlot(0);
                 ItemStack crystallizingStack = itemStackHandler.getStackInSlot(2);
                 return !crystallizingStack.sameItem(heldItems);
             }
@@ -356,12 +341,12 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
     }
 
     @Override
-    public boolean canPlaceItemThroughFace(int pIndex, ItemStack pItemStack, @Nullable Direction pDirection) {
+    public boolean canPlaceItemThroughFace(int pIndex, @NotNull ItemStack pItemStack, @Nullable Direction pDirection) {
         return this.canPlaceItem(pIndex, pItemStack);
     }
 
     @Override
-    public boolean canTakeItemThroughFace(int pIndex, ItemStack pStack, Direction pDirection) {
+    public boolean canTakeItemThroughFace(int pIndex, @NotNull ItemStack pStack, @NotNull Direction pDirection) {
         return pDirection != Direction.DOWN && pIndex == 1;
     }
 
@@ -413,12 +398,12 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
     }
 
     @Override
-    public boolean stillValid(Player pPlayer) {
+    public boolean stillValid(@NotNull Player pPlayer) {
         if (level != null && level.getBlockEntity(this.worldPosition) != this) {
             return false;
         }
         else {
-            return pPlayer.distanceToSqr((double)this.worldPosition.getX() + 0.5D, (double)this.worldPosition.getY() + 0.5D, (double)this.worldPosition.getZ() + 0.5D) <= 64.0D;
+            return pPlayer.distanceToSqr(this.worldPosition.getX() + 0.5D, this.worldPosition.getY() + 0.5D, this.worldPosition.getZ() + 0.5D) <= 64.0D;
         }
     }
 
@@ -435,6 +420,12 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
     public void clearContent() {
         for (int i = 0; i < itemStackHandler.getSlots(); i++) {
             itemStackHandler.setStackInSlot(i, new ItemStack(Items.AIR));
+        }
+    }
+
+    public void setHandler(ItemStackHandler itemStackHandler) {
+        for (int i = 0; i < itemStackHandler.getSlots(); i++) {
+            this.itemStackHandler.setStackInSlot(i, itemStackHandler.getStackInSlot(i));
         }
     }
 }

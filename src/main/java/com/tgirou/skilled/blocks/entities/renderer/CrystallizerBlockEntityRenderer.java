@@ -16,6 +16,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class CrystallizerBlockEntityRenderer implements BlockEntityRenderer<CrystallizerBlockEntity> {
     public CrystallizerBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
@@ -23,11 +26,38 @@ public class CrystallizerBlockEntityRenderer implements BlockEntityRenderer<Crys
     }
 
     @Override
-    public void render(CrystallizerBlockEntity blockEntity, float partialTick, PoseStack stack, MultiBufferSource
+    public void render(@NotNull CrystallizerBlockEntity blockEntity, float partialTick, @NotNull PoseStack stack, @NotNull MultiBufferSource
                        bufferSource, int packedLight, int packedOverlay) {
+        renderInputStack(blockEntity, stack, bufferSource, packedLight, packedOverlay);
+        renderOutputStack(blockEntity, stack, bufferSource);
+    }
+
+    private void renderOutputStack(CrystallizerBlockEntity blockEntity, PoseStack stack, MultiBufferSource
+            bufferSource) {
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         ItemStack itemStack = blockEntity.getResultStack();
-        ItemStack itemStack2 = blockEntity.getCrystallizingStack();
+        stack.pushPose();
+        stack.translate(0.5f, 0.06f, 0.75f);
+        stack.scale(0.25f, 0.25f, 0.25f);
+        stack.mulPose(Vector3f.XP.rotationDegrees(90));
+
+        switch (blockEntity.getBlockState().getValue(CrystallizerBlock.FACING)) {
+            case NORTH -> stack.mulPose(Vector3f.ZP.rotationDegrees(0));
+            case EAST -> stack.mulPose(Vector3f.ZP.rotationDegrees(90));
+            case SOUTH -> stack.mulPose(Vector3f.ZP.rotationDegrees(180));
+            case WEST -> stack.mulPose(Vector3f.ZP.rotationDegrees(270));
+        }
+
+        itemRenderer.renderStatic(itemStack, ItemTransforms.TransformType.GUI, getLightLevel(Objects.requireNonNull(blockEntity.getLevel()),
+                        blockEntity.getBlockPos()),
+                OverlayTexture.NO_OVERLAY, stack, bufferSource, 1);
+        stack.popPose();
+    }
+
+    private void renderInputStack(CrystallizerBlockEntity blockEntity, PoseStack stack, MultiBufferSource
+            bufferSource, int packedLight, int packedOverlay) {
+        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+        ItemStack itemStack = blockEntity.getCrystallizingStack();
         stack.pushPose();
         stack.translate(0.5f, 1.25f, 0.82f);
         stack.scale(0.25f, 0.25f, 0.25f);
@@ -40,7 +70,7 @@ public class CrystallizerBlockEntityRenderer implements BlockEntityRenderer<Crys
             case WEST -> stack.mulPose(Vector3f.ZP.rotationDegrees(270));
         }
 
-        itemRenderer.renderStatic(itemStack, ItemTransforms.TransformType.GUI, getLightLevel(blockEntity.getLevel(),
+        itemRenderer.renderStatic(itemStack, ItemTransforms.TransformType.GUI, getLightLevel(Objects.requireNonNull(blockEntity.getLevel()),
                         blockEntity.getBlockPos()),
                 OverlayTexture.NO_OVERLAY, stack, bufferSource, 1);
         stack.popPose();

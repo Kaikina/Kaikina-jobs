@@ -21,7 +21,7 @@ public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS =
             DeferredRegister.create(ForgeRegistries.BLOCKS, Constants.MOD_ID);
     public static final RegistryObject<Block> CRYSTALLIZER = registerBlock("crystallizer",
-            () -> new CrystallizerBlock(BlockBehaviour.Properties.of(Material.METAL)
+            () -> new CrystallizerBlock(BlockBehaviour.Properties.of(Material.GLASS)
                     .strength(6f).requiresCorrectToolForDrops().noOcclusion()), CreativeModeTab.TAB_DECORATIONS);
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab) {

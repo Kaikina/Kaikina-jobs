@@ -15,6 +15,8 @@ import com.tgirou.skilled.networking.Messages;
 import com.tgirou.skilled.client.KeyBindings;
 import com.tgirou.skilled.recipes.ModRecipes;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -78,6 +80,7 @@ public class SkilledMod
 
     private void clientSetup(final FMLClientSetupEvent event) {
         MenuScreens.register(ModMenuTypes.CRYSTALLIZER_MENU.get(), CrystallizerScreen::new);
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSTALLIZER.get(), RenderType.translucent());
     }
 
     private void setup(final FMLCommonSetupEvent event) {
